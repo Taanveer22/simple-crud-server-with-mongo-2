@@ -43,6 +43,15 @@ async function run() {
     const myDb = client.db("studentDb");
     const myColl = myDb.collection("students");
 
+    // get() method
+    app.get("/users", async (req, res) => {
+      const myCursor = myColl.find();
+      const result = await myCursor.toArray();
+      res.send(result);
+    });
+
+
+     // post() method
     app.post("/users", async (req, res) => {
       const myDoc = req.body;
       console.log(myDoc);
