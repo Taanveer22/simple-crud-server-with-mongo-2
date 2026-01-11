@@ -42,6 +42,10 @@ async function run() {
 
     const myDb = client.db("studentDb");
     const myColl = myDb.collection("students");
+    
+    // ====received data from client side=========
+    // === send data to mongodb ==============
+    // =======by these methods ============
 
     // get() method
     app.get("/users", async (req, res) => {
@@ -50,11 +54,37 @@ async function run() {
       res.send(result);
     });
 
+    // get() method
+    app.get("/users/:id", async (req, res) => {
+      const myId = req.params.id;
+      const myQuery = { _id: new ObjectId(myId) };
+      const result = await myColl.findOne(myQuery);
+      res.send(result);
+    });
+
     // post() method
     app.post("/users", async (req, res) => {
       const myDoc = req.body;
-      console.log(myDoc);
       const result = await myColl.insertOne(myDoc);
+      res.send(result);
+    });
+
+    // put() method
+    app.put("/users/:id", async (req, res) => {
+      const myId = req.params.id;
+      const myUser = req.body;
+      console.log(myId, myUser);
+      const myQuery = { _id: new ObjectId(myId) };
+      const myUpdate = {
+        $set: {
+          name: myUser.name,
+          email: myUser.email,
+        },
+      };
+      const myOptions = {
+        upsert: true,
+      };
+      const result = await myColl.updateOne(myQuery, myUpdate, myOptions);
       res.send(result);
     });
 
@@ -78,6 +108,7 @@ async function run() {
 run();
 
 // === 5.routes setup ===
+// ====received data from client side====
 app.get("/", (req, res) => {
   res.send("the server is working");
 });
