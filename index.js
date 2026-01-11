@@ -12,7 +12,7 @@
 // === 1. required ===
 const express = require("express");
 const cors = require("cors");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 // === 2. instance initialization ===
 const app = express();
@@ -50,12 +50,19 @@ async function run() {
       res.send(result);
     });
 
-
-     // post() method
+    // post() method
     app.post("/users", async (req, res) => {
       const myDoc = req.body;
       console.log(myDoc);
       const result = await myColl.insertOne(myDoc);
+      res.send(result);
+    });
+
+    // delete() method
+    app.delete("/users/:id", async (req, res) => {
+      const myId = req.params.id;
+      const myQuery = { _id: new ObjectId(myId) };
+      const result = await myColl.deleteOne(myQuery);
       res.send(result);
     });
 
